@@ -1,0 +1,14 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.db
+# Ignore NuGet package cache
+packages/
+*.nupkg
+project.lock.json
+project.assets.json
+
+# Ignore logs & temporary files
+*.log
