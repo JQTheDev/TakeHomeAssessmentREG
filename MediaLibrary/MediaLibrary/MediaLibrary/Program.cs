@@ -14,6 +14,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseStaticFiles();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated(); // Ensures database is created
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
