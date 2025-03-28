@@ -32,12 +32,8 @@ namespace MediaLibrary.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = $"An error occurred while trying to retrieve the movies: {ex.Message}"
-                });
-                //object will be used in frontend to show why request failed.
+                Console.WriteLine($"Api error: {ex.Message}");
+                return StatusCode(500);
             }
 
         }
