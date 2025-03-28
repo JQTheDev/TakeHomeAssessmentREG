@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MediaLibrary.EF;
 using MediaLibrary.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace MediaLibrary.Controllers
 {
@@ -51,6 +45,7 @@ namespace MediaLibrary.Controllers
                 {
                     return NotFound("No comments found for this movie.");
                 }
+                comments = comments.OrderByDescending(x => x.Date).ToList(); //ordering increases time Complex but not by much.
 
                 return Ok(comments);
             }
@@ -59,7 +54,8 @@ namespace MediaLibrary.Controllers
                 Console.WriteLine($"Api error: {ex.Message}");
                 return StatusCode(500);
             }
-        } //GetMovies returns all info on the movie apart from comments. When "More Info" button is actioned on UI, comments for corresponding
-          //movie are returned to complete all the information. Comments are not returned because of the relationship between comments and movies in DB
+        } //GetMovies returns all info on the movie apart from comments. When "More Info" button is actioned in UI, comments for corresponding
+          //movie are returned to complete all the information. Comments are not returned in GetMovies call because of the relationship
+          //between comments and movies in DB
     }
 }

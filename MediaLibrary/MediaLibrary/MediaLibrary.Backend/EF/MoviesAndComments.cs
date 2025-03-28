@@ -21,14 +21,13 @@ namespace MediaLibrary.Data
             );
 
             Random random = new Random();
-            DateTime RandomDate() => DateTime.UtcNow.AddHours(-random.Next(1, 24));
+            DateTime RandomDate() => DateTime.UtcNow.AddHours(-random.Next(1, 24)); //random comment time between now and 24 hours ago
 
             modelBuilder.Entity<Comment>().HasData(
                 new Comment { Id = 1, Text = "Amazing movie!", Author = "User1", Date = RandomDate(), MovieId = 1 },
                 new Comment { Id = 2, Text = "Great visual effects.", Author = "User2", Date = RandomDate(), MovieId = 1 },
                 new Comment { Id = 3, Text = "A masterpiece.", Author = "User3", Date = RandomDate(), MovieId = 2 },
                 new Comment { Id = 4, Text = "Best Joker performance!", Author = "User4", Date = RandomDate(), MovieId = 2 },
-                new Comment { Id = 5, Text = "Mind-blowing!", Author = "User5", Date = RandomDate(), MovieId = 3 },
                 new Comment { Id = 6, Text = "The Matrix changed my life!", Author = "User6", Date = RandomDate(), MovieId = 4 },
                 new Comment { Id = 7, Text = "Red pill or blue pill?", Author = "User7", Date = RandomDate(), MovieId = 4 },
                 new Comment { Id = 8, Text = "Groundbreaking for its time.", Author = "User8", Date = RandomDate(), MovieId = 4 },

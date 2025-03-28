@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fetchMovies, getCommentsForMovie } from '$lib/api';
+  import { fetchMovies, getCommentsForMovie, errorMsg } from '$lib/api';
   import type { Movie, Comment } from '$lib/types';
 
   //Using svelte's dynamic nature to navigate between pages
@@ -18,6 +18,7 @@
       currentView = 'movies';
     } catch (err) {
       error = true;
+      alert(`Error: ${errorMsg}`)
     } finally {
       isLoading = false;
     }
@@ -28,7 +29,7 @@
   }
 
   async function displayComments(movieId: number) {
-    if (selectedMovieId === movieId) {
+    if (selectedMovieId == movieId) {
       selectedMovieId = null;
       return; //If same button is clicked, close comments & full details
     }
@@ -37,7 +38,8 @@
       comments = await getCommentsForMovie(movieId);
     }
     catch {
-      //some error handling
+      comments = []
+      alert(`Error: ${errorMsg}`)
     }
     
 
@@ -54,12 +56,22 @@
   function getHoursAgo(commentDate: string): string {
   const commentTime = new Date(commentDate).getTime();
   const currentTime = Date.now();
-  const hoursAgo = Math.floor((currentTime - commentTime) / (1000 * 60 * 60)); //Compares current time to comment time to see how many hours ago the comment was posted
+  const hoursAgo = Math.floor((currentTime - commentTime) / (1000 * 60 * 60)); //Compares current time to comment time to see how many hours ago comment was posted
   
   return `${hoursAgo} hours ago`;
-  //considered sorting numbers so that most recent was displayed first but it would increase overall time complex.
 }
 
+function ratingColour(rating: number) {
+  if (rating <= 3){
+    return "low-rating"
+  }
+  else if (rating > 3 && rating <= 6){
+    return "mid-rating"
+  }
+  else{
+    return "high-rating"
+  }
+}
 
 </script>
 
@@ -78,38 +90,37 @@
     </div>
 
   {:else}
-    
-    <div class="movies-view">
-      <h1>Movie List</h1>
-      <button on:click={goHome}>Go Back</button>
-      {#each movies as movie}
-        <div class="movie-items">
-          {movie.title} ({movie.year})
-          <span class="rating"> {movie.rating}/10</span>
-          <button 
-          on:click={() => displayComments(movie.id)}
-          class:active={selectedMovieId === movie.id}> 
-          {selectedMovieId === movie.id ? 'Hide Info' : 'More Info'}</button>
-        </div>
+    <h1>Movie List</h1>
+    <button on:click={goHome}>Go Back</button>
+    {#each movies as movie}
+      <div class="movie-items">
+        {movie.title} ({movie.year})
+          <b>Rating:</b>
+          <span class={`${ratingColour(movie.rating)}`}>{movie.rating}/10</span>
+        <button 
+        on:click={() => displayComments(movie.id)}
+        class:active={selectedMovieId == movie.id}> 
+        {selectedMovieId == movie.id ? 'Hide Info' : 'More Info'}</button>
+      </div>
 
-        {#if selectedMovieId === movie.id}
-        <div class="more-info">
-          <p><b>Duration:</b>{HrsAndMins(movie.duration)}</p>
-          <p><b>{movie.popularity}</b> Have watched within the last 24 hours</p>
-            <p style="font-size: 1rem;">Comments:</p>
-            {#if comments.length > 0}
-              {#each comments as comment}
-              <div style="display:flex;">
-                <p id="each-comment">{comment.text}</p>
-                <p>({getHoursAgo(comment.date)})</p>
-              </div>
-              {/each}
-            {/if}
-        </div>
-        {/if}
-      {/each}
+      {#if selectedMovieId == movie.id}
+      <div class="more-info">
+        <p><b>Duration:</b>{HrsAndMins(movie.duration)}</p>
+        <p><b>{movie.popularity}</b> Have watched within the last 24 hours</p>
+          <p style="font-size: 1rem;">Comments:</p>
+          {#if comments.length > 0}
+            {#each comments as comment}
+            <div class="comments">
+              <p>{comment.author} -</p>
+              <p id="each-comment">"{comment.text}"</p>
+              <p>({getHoursAgo(comment.date)})</p>
+            </div>
+            {/each}
+          {/if}
+      </div>
+      {/if}
+    {/each}
 
-    </div>
   {/if}
 </main>
 
@@ -123,6 +134,24 @@
   padding: 0.8rem;
   background: grey;
   border-radius: 6px;
+  color: black;
+}
+
+.high-rating{
+  color: green;
+}
+
+.mid-rating{
+  color: yellow;
+}
+
+.comments{
+  display: flex;
+  justify-content: center;
+}
+
+.low-rating{
+  color: red;
 }
 
 .more-info p {
@@ -132,8 +161,8 @@
   .comments-section{
     display: block;
   }
-  .move-items{
-    border: 5px;
+  .movie-items{
+    margin: 0.5rem;
   }
 
   .error {
@@ -144,13 +173,11 @@
     display:block;
     margin-bottom: 0.5rem;
     margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    font-weight: 600;
   }
   .home-page {
     text-align: center;
-  }
-
-  .movies-view{
-    
   }
 
   

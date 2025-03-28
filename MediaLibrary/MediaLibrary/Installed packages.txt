@@ -9,3 +9,4 @@ npm install
 
 
 vite.config.ts file will need to have '$lib' mapped to a prefix path of './src/lib'
+CORS needs to be allowed in Program.cs

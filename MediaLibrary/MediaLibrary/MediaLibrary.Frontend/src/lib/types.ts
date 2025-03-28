@@ -2,7 +2,7 @@ export type Comment = {
     id: number;
     text: string;
     author: string;
-    date: string; // string or date... unsure
+    date: string;
     movieId: number;
   }
   
