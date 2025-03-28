@@ -1,3 +1,0 @@
-Media Libary:
-
-Start writing...
