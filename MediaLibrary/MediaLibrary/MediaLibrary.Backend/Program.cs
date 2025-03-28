@@ -19,9 +19,14 @@ app.UseStaticFiles();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.EnsureCreated(); // Ensures database is created
+    dbContext.Database.EnsureCreated();
 }
 
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+    
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -38,31 +38,28 @@ namespace MediaLibrary.Controllers
 
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        [HttpGet("{id}/Comments")]
+        public async Task<ActionResult<Movie>> GetMovieComments(int id)
         {
             try
             {
-                var movie = await _context.Movies.FindAsync(id);
-                if (movie == null)
+                var comments = await _context.Comments
+                    .Where(c => c.MovieId == id)
+                    .ToListAsync();
+
+                if (!comments.Any())
                 {
-                    return NotFound("A movie with this id does not exist");
+                    return NotFound("No comments found for this movie.");
                 }
-                else
-                {
-                    return Ok(movie);
-                }
+
+                return Ok(comments);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
-
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = $"An error occurred while trying to access the database: {ex.Message}"
-                });
+                Console.WriteLine($"Api error: {ex.Message}");
+                return StatusCode(500);
             }
-        }
+        } //GetMovies returns all info on the movie apart from comments. When "More Info" button is actioned on UI, comments for corresponding
+          //movie are returned to complete all the information. Comments are not returned because of the relationship between comments and movies in DB
     }
 }

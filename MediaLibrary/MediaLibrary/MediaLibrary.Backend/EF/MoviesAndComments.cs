@@ -20,29 +20,34 @@ namespace MediaLibrary.Data
                 new Movie { Id = 10, Title = "Forrest Gump", Rating = 6, Duration = 142, Year = 1994, Popularity = 96 }
             );
 
+            Random random = new Random();
+            DateTime RandomDate() => DateTime.UtcNow.AddHours(-random.Next(1, 24));
+
             modelBuilder.Entity<Comment>().HasData(
-                new Comment { Id = 1, Text = "Amazing movie!", Author = "User1", Date = DateTime.UtcNow, MovieId = 1 },
-                new Comment { Id = 2, Text = "Great visual effects.", Author = "User2", Date = DateTime.UtcNow, MovieId = 1 },
-                new Comment { Id = 3, Text = "A masterpiece.", Author = "User3", Date = DateTime.UtcNow, MovieId = 2 },
-                new Comment { Id = 4, Text = "Best Joker performance!", Author = "User4", Date = DateTime.UtcNow, MovieId = 2 },
-                new Comment { Id = 5, Text = "Mind-blowing!", Author = "User5", Date = DateTime.UtcNow, MovieId = 3 },
-                new Comment { Id = 6, Text = "The Matrix changed my life!", Author = "User6", Date = DateTime.UtcNow, MovieId = 4 },
-                new Comment { Id = 7, Text = "Red pill or blue pill?", Author = "User7", Date = DateTime.UtcNow, MovieId = 4 },
-                new Comment { Id = 8, Text = "Groundbreaking for its time.", Author = "User8", Date = DateTime.UtcNow, MovieId = 4 },
-                new Comment { Id = 9, Text = "Russell Crowe was incredible.", Author = "User9", Date = DateTime.UtcNow, MovieId = 5 },
-                new Comment { Id = 10, Text = "Best movie of all time!", Author = "User10", Date = DateTime.UtcNow, MovieId = 6 },
-                new Comment { Id = 11, Text = "Tim Robbins was phenomenal.", Author = "User11", Date = DateTime.UtcNow, MovieId = 6 },
-                new Comment { Id = 12, Text = "Hope is a good thing.", Author = "User12", Date = DateTime.UtcNow, MovieId = 6 },
-                new Comment { Id = 13, Text = "Iconic film.", Author = "User13", Date = DateTime.UtcNow, MovieId = 7 },
-                new Comment { Id = 14, Text = "Marlon Brando was perfect.", Author = "User14", Date = DateTime.UtcNow, MovieId = 7 },
-                new Comment { Id = 15, Text = "So quotable.", Author = "User15", Date = DateTime.UtcNow, MovieId = 8 },
-                new Comment { Id = 16, Text = "A Tarantino masterpiece.", Author = "User16", Date = DateTime.UtcNow, MovieId = 8 },
-                new Comment { Id = 17, Text = "I love the nonlinear storytelling.", Author = "User17", Date = DateTime.UtcNow, MovieId = 8 },
-                new Comment { Id = 18, Text = "The twist at the end!", Author = "User18", Date = DateTime.UtcNow, MovieId = 9 },
-                new Comment { Id = 19, Text = "You can't talk about Fight Club.", Author = "User19", Date = DateTime.UtcNow, MovieId = 9 },
-                new Comment { Id = 20, Text = "Forrest Gump is such an inspiring story.", Author = "User20", Date = DateTime.UtcNow, MovieId = 10 },
-                new Comment { Id = 21, Text = "Tom Hanks is brilliant.", Author = "User21", Date = DateTime.UtcNow, MovieId = 10 }
+                new Comment { Id = 1, Text = "Amazing movie!", Author = "User1", Date = RandomDate(), MovieId = 1 },
+                new Comment { Id = 2, Text = "Great visual effects.", Author = "User2", Date = RandomDate(), MovieId = 1 },
+                new Comment { Id = 3, Text = "A masterpiece.", Author = "User3", Date = RandomDate(), MovieId = 2 },
+                new Comment { Id = 4, Text = "Best Joker performance!", Author = "User4", Date = RandomDate(), MovieId = 2 },
+                new Comment { Id = 5, Text = "Mind-blowing!", Author = "User5", Date = RandomDate(), MovieId = 3 },
+                new Comment { Id = 6, Text = "The Matrix changed my life!", Author = "User6", Date = RandomDate(), MovieId = 4 },
+                new Comment { Id = 7, Text = "Red pill or blue pill?", Author = "User7", Date = RandomDate(), MovieId = 4 },
+                new Comment { Id = 8, Text = "Groundbreaking for its time.", Author = "User8", Date = RandomDate(), MovieId = 4 },
+                new Comment { Id = 9, Text = "Russell Crowe was incredible.", Author = "User9", Date = RandomDate(), MovieId = 5 },
+                new Comment { Id = 10, Text = "Best movie of all time!", Author = "User10", Date = RandomDate(), MovieId = 6 },
+                new Comment { Id = 11, Text = "Tim Robbins was phenomenal.", Author = "User11", Date = RandomDate(), MovieId = 6 },
+                new Comment { Id = 12, Text = "Hope is a good thing.", Author = "User12", Date = RandomDate(), MovieId = 6 },
+                new Comment { Id = 13, Text = "Iconic film.", Author = "User13", Date = RandomDate(), MovieId = 7 },
+                new Comment { Id = 14, Text = "Marlon Brando was perfect.", Author = "User14", Date = RandomDate(), MovieId = 7 },
+                new Comment { Id = 15, Text = "So quotable.", Author = "User15", Date = RandomDate(), MovieId = 8 },
+                new Comment { Id = 16, Text = "A Tarantino masterpiece.", Author = "User16", Date = RandomDate(), MovieId = 8 },
+                new Comment { Id = 17, Text = "I love the nonlinear storytelling.", Author = "User17", Date = RandomDate(), MovieId = 8 },
+                new Comment { Id = 18, Text = "The twist at the end!", Author = "User18", Date = RandomDate(), MovieId = 9 },
+                new Comment { Id = 19, Text = "You can't talk about Fight Club.", Author = "User19", Date = RandomDate(), MovieId = 9 },
+                new Comment { Id = 20, Text = "Forrest Gump is such an inspiring story.", Author = "User20", Date = RandomDate(), MovieId = 10 },
+                new Comment { Id = 21, Text = "Tom Hanks is brilliant.", Author = "User21", Date = RandomDate(), MovieId = 10 }
             );
         }
+
+        
     }
 }
