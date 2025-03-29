@@ -1,0 +1,52 @@
+Rationale behind similarity system.
+
+Weighting:
+
+
+Phone number
+weight 1
+Reasoning: Unique value. A match means that the record has to be a correct match (not taking into account fraudulent activities like cloning sims etc)
+Overrides algorithm. if 1to1 match, return obj {person, 1, 1} then continue onto next person in DB until end of DB
+
+Email match
+Weight - 1
+Reasoning: Again, unique field.
+Overrides algorithm. Same as above
+
+Email Prefix
+Weight - 0.85
+Reasoning: Extremely low probability. can be made up of nums&chars so way more possibilities.
+
+Name
+Weight - 0.7
+Reasoning: Very low probability but not impossible. Also common names increase chances e.g John, Olivia & common surenames like Smith
+
+Address:
+Weight - 0.6
+Reasoning: Likelihood is very low however, there are instances in America (upon research) where house numbers and street names are not unique within the same city
+
+DOB
+Weight - 0.45
+Reasoning: Chance of 2 individuals having same Birthday is 1/365. This is low but much higher in comparison to probability of fields above
+
+Age
+Weight - 0.2
+Reasoning: Assuming app is for individuals age 18+ and avg life expectancy in America is 78, The chance of 2 people having the same birthday is 1/60 (78-18). quite high.
+
+Favourite Colour
+Weight - 0.1
+Reasoning: 7 main colours to choose from (ROYGBIV). 1/7 is very high
+
+
+
+How I will work out similarity score & confidence score:
+WS = weighted score
+
+fuzzy score gets multiplied by weight.
+fuzzy score = x
+weighted score = x * weight for corresponding property
+
+confidence score = (EmailPre WS + Name WS + Address WS + DOB WS)/4
+
+if confidence score above certain threshold, add to result else, next record 
+similarity score = weighted score (fuzzy score x weight) / sum of all weights (excluding overrides)
