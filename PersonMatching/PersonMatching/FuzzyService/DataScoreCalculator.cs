@@ -66,10 +66,10 @@ namespace PersonMatching.FuzzyService
         {
             if (int.TryParse(ageOneAsString, out int age1) && int.TryParse(ageTwoAsString, out int age2))
             {
-                return age1 == age2 ? 1.0 : 0.0; // Returns 1 if ages match, otherwise 0
+                return age1 == age2 ? 1.0 : 0.0;
             }
 
-            return 0.0; // Return 0 if conversion fails
+            return 0.0; //return 0 if conversion fails
         }
 
         public static double GetBirthdayScore(string bday1, string bday2)

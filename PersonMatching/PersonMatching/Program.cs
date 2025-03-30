@@ -33,35 +33,44 @@ namespace PersonMatching
         public Person MatchedPerson { get; set; }
         public double DataScore { get; set; }
         public double ConfidenceScore { get; set; }
+
+        public MatchResult(Person person, double dataScore, double confidenceScore) 
+        {
+            MatchedPerson = person;
+            DataScore = dataScore;
+            ConfidenceScore = confidenceScore;
+        }
     }
 
     public class MatchingAlgorithm
     {
         static Dictionary<string, double> weighting = new Dictionary<string, double>()
         {
-            { "phoneNo", 0.99 },
-            { "email", 0.99 },
+            { "emailPre", 0.85 },
             { "name", 0.7 },
             { "address", 0.6 },
             { "birthday", 0.45 },
             { "age", 0.2 },
             { "favColour", 0.1 }
-        }; //to be edited. TODO: remove number and email. add emailPre
+        };
 
         public  List<MatchResult> CalculateMatch(Person candidate, List<Person> records)
         {
-            //Todo: if fuzzy score for phone or fuzzy score for email, return {Person in DB, 1, 1}
 
             double dataScore = 0;
             double confidenceScore = 0;
             List<MatchResult> results = new List<MatchResult>();
 
             foreach (Person record in records) {
-
+                if((GetSimilarityScore("phoneNo", candidate.PhoneNo, record.PhoneNo) * weighting["phoneNo"] == 1 || GetSimilarityScore("email", candidate.Email, record.Email) * weighting["email"] == 1))
+                {
+                    results.Add(new MatchResult(record, 1, 1));
+                }
+                
                 double nameScore = GetSimilarityScore("name", candidate.Name, record.Name) * weighting["name"];
                 double ageScore = GetSimilarityScore("age", candidate.Age, record.Age) * weighting["age"];
                 double addressScore = GetSimilarityScore("address", candidate.Address, record.Address) * weighting["address"];
-                double emailScore = GetSimilarityScore("email", candidate.Email, record.Email) * weighting["email"]; //handle appropraitely & add/replace with emailPre
+                double emailScore = GetSimilarityScore("emailPre", candidate.Email, record.Email) * weighting["emailPre"]; //handle appropraitely & add/replace with emailPre
                 double phoneScore = GetSimilarityScore("phoneNo", candidate.PhoneNo, record.PhoneNo) * weighting["phoneNo"]; //handle appropraitely
                 double birthdayScore = GetSimilarityScore("birthday", candidate.Birthday, record.Birthday) * weighting["birthday"];
                 double favColourScore = GetSimilarityScore("favColour", candidate.FavColour, record.FavColour) * weighting["favColour"];
