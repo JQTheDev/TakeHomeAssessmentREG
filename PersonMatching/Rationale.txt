@@ -5,8 +5,8 @@ Weighting:
 
 Phone number
 weight 1
-Reasoning: Unique value. A match means that the record has to be a correct match (not taking into account fraudulent activities like cloning sims etc)
-Overrides algorithm. if 1to1 match, return obj {person, 1, 1} then continue onto next person in DB until end of DB
+Reasoning: Unique value. A match means that the record has to be a correct match
+Overrides algorithm. if 1to1 match, return obj {person, 100%, 100%} then continue onto next person in DB until end of DB
 
 Email match
 Weight - 1
@@ -15,7 +15,7 @@ Overrides algorithm. Same as above
 
 Email Prefix
 Weight - 0.85
-Reasoning: Extremely low probability. can be made up of nums&chars so way more possibilities.
+Reasoning: Extremely low probability. can be made up of nums&chars so many more possibilities.
 
 Name
 Weight - 0.7
@@ -44,9 +44,10 @@ WS = weighted score
 
 fuzzy score gets multiplied by weight.
 fuzzy score = x
-weighted score = x * weight for corresponding property
+weighted score = x * weight for corresponding property (excluding overrides)
 
-confidence score = (EmailPre WS + Name WS + Address WS + DOB WS)/4
+confidence score = sum of weighted scores / sum of weights assigned to each property
 
 if confidence score above certain threshold, add to result else, next record 
-similarity score = weighted score (fuzzy score x weight) / sum of all weights (excluding overrides)
+similarity score = Sum of fuzzy scores / sum of max score possible (excluding overrides)
+
