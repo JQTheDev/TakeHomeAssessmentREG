@@ -7,7 +7,7 @@ namespace PersonMatching.Tests
     public class Tests
     {
         [Test]
-        public void Test_100Percent_ConfidenceAndSimilarity_WithEmailAndNumber()
+        public void TestExactMatchEmailAndNumberOverridesAlgorithm()
         {
             var candidate = new Person("John A. Smith", "30", "300 Diff St, Chicago, USA", "john.q@example.com", "000-000-000", "2024-08-26", "Red");
             var record = new Person("These", "11", "are not, equal", "john.q@example.com", "123-678-4567", "2000-00-11", "in any way");
@@ -59,7 +59,7 @@ namespace PersonMatching.Tests
         }
 
         [Test]
-        public void TestPhoneNormalization()
+        public void TestPhoneNumberGetsNormalised()
         {
             var candidate = new Person("John ith", "30", "fffffffffffffff", "sghghh.com", "+1-123-678-4567", "20-08-26", "asa");
             var record = new Person("John A. Smith", "30", "aaaaaaaaaaa", "ssss.com", "123-678-4567", "2024-08-26", "fff");
