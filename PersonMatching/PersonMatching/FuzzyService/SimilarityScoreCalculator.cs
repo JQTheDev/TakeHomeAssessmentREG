@@ -11,7 +11,7 @@ namespace PersonMatching.FuzzyService
                 return 0.0;
 
 
-            switch (field.ToLower())
+            switch (field)
             {
                 case "name":
                     return GetNameScore(candVal, recVal);
@@ -22,10 +22,13 @@ namespace PersonMatching.FuzzyService
                 case "email":
                     return GetEmailScore(candVal, recVal);
 
-                case "emailprefix":
+                case "emailPre":
                     return GetEmailPrefixScore(candVal, recVal);
 
-                case "favcolour":
+                case "phoneNo":
+                    return GetPhoneNoScore(candVal, recVal);
+
+                case "favColour":
                     return GetFavColourScore(candVal, recVal);
 
                 case "age":
@@ -49,7 +52,7 @@ namespace PersonMatching.FuzzyService
         {
             return Fuzz.TokenSortRatio(address1.ToLower(), address2.ToLower()) / 100.0;
             //Similarity score barely affected by differences like street and st and order in which door no.,
-            // street name and etc appear in. e.g regtech Street 789  and 789 regtech St returns high similarity
+            // and street name appear. e.g regtech Street 789 and 789 regtech St returns high similarity
         }
 
         public static double GetEmailScore(string email1, string email2)
@@ -59,8 +62,16 @@ namespace PersonMatching.FuzzyService
         public static double GetEmailPrefixScore(string email1, string email2)
         {
             return Fuzz.PartialRatio(email1.ToLower(), email2.ToLower()) / 100.0;
-            //handles different email domains effectively to still return high similarity if email prefix
-            //has high similarity
+            //handles different email domains effectively by still returning high similarity if email prefix
+            //is very similar
+        }
+
+        public static double GetPhoneNoScore(string num1, string num2)
+        {
+           
+                return num1 == num2 ? 1.0 : 0.0; //string comparison vs int comparison does not matter in this instance. No point in converting
+
+
         }
 
         public static double GetFavColourScore(string colour1, string colour2)
@@ -68,14 +79,11 @@ namespace PersonMatching.FuzzyService
             return Fuzz.Ratio(colour1.ToLower(), colour2.ToLower()) / 100.0;
         }
 
-        public static double GetAgeScore(string ageOneAsString, string ageTwoAsString)
+        public static double GetAgeScore(string age1, string age2)
         {
-            if (int.TryParse(ageOneAsString, out int age1) && int.TryParse(ageTwoAsString, out int age2))
-            {
+           
                 return age1 == age2 ? 1.0 : 0.0;
-            }
-
-            return 0.0; //return 0 if conversion fails
+            
         }
 
         public static double GetBirthdayScore(string bday1, string bday2)

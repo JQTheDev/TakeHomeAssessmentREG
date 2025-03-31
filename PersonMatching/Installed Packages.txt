@@ -1,0 +1,6 @@
+C# Library for fuzzy matching:
+dotnet add package FuzzySharp
+
+NUnit Framework for testing:
+dotnet add package NUnit 3.13.3 (important for methods used)
+dotnet add package NUnit3TestAdapter
