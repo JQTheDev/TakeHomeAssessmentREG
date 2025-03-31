@@ -1,6 +1,7 @@
 ﻿using FuzzySharp;
 using PersonMatching.FuzzyService;
-using static PersonMatching.FuzzyService.DataScoreCalculator;
+using System.Runtime.InteropServices;
+using static PersonMatching.FuzzyService.SimilarityScoreCalculator;
 
 
 namespace PersonMatching
@@ -22,7 +23,7 @@ namespace PersonMatching
             Age = age;
             Address = address;
             Email = email;
-            EmailPrefix = email.Split("@")[0];
+            EmailPrefix = email.Split("@")[0]; //gets the string before the @symbol and disregards the rest
             PhoneNo = phoneNo;
             Birthday = birthday;
             FavColour = favColour;
@@ -31,13 +32,13 @@ namespace PersonMatching
     public class MatchResult
     {
         public Person MatchedPerson { get; set; }
-        public double DataScore { get; set; }
-        public double ConfidenceScore { get; set; }
+        public string SimilarityScore { get; set; }
+        public string ConfidenceScore { get; set; }
 
-        public MatchResult(Person person, double dataScore, double confidenceScore) 
+        public MatchResult(Person person, string dataScore, string confidenceScore) 
         {
             MatchedPerson = person;
-            DataScore = dataScore;
+            SimilarityScore = dataScore;
             ConfidenceScore = confidenceScore;
         }
     }
@@ -54,30 +55,50 @@ namespace PersonMatching
             { "favColour", 0.1 }
         };
 
-        public  List<MatchResult> CalculateMatch(Person candidate, List<Person> records)
+        public static List<MatchResult> CalculateMatch(Person candidate, List<Person> records)
         {
 
-            double dataScore = 0;
+            double similarityScore = 0;
             double confidenceScore = 0;
             List<MatchResult> results = new List<MatchResult>();
 
             foreach (Person record in records) {
-                if((GetSimilarityScore("phoneNo", candidate.PhoneNo, record.PhoneNo) * weighting["phoneNo"] == 1 || GetSimilarityScore("email", candidate.Email, record.Email) * weighting["email"] == 1))
+                if (candidate.PhoneNo[0] == '+')
                 {
-                    results.Add(new MatchResult(record, 1, 1));
+                    candidate.PhoneNo = candidate.PhoneNo.Substring(3); //Example +1-123-456-7890 returns 123-456-7890
+                }
+                if ((GetSimilarityScore("phoneNo", candidate.PhoneNo, record.PhoneNo) == 1.0 || GetSimilarityScore("email", candidate.Email, record.Email) == 1.0))
+                {
+                    results.Add(new MatchResult(record, "Confidence score: 100%", "Similarity Score: 100%"));
+                    continue; //no need to do additional calculations. Person will be 100% match if either of these unique fields have a similarity score of one
                 }
                 
-                double nameScore = GetSimilarityScore("name", candidate.Name, record.Name) * weighting["name"];
-                double ageScore = GetSimilarityScore("age", candidate.Age, record.Age) * weighting["age"];
-                double addressScore = GetSimilarityScore("address", candidate.Address, record.Address) * weighting["address"];
-                double emailScore = GetSimilarityScore("emailPre", candidate.Email, record.Email) * weighting["emailPre"]; //handle appropraitely & add/replace with emailPre
-                double phoneScore = GetSimilarityScore("phoneNo", candidate.PhoneNo, record.PhoneNo) * weighting["phoneNo"]; //handle appropraitely
-                double birthdayScore = GetSimilarityScore("birthday", candidate.Birthday, record.Birthday) * weighting["birthday"];
-                double favColourScore = GetSimilarityScore("favColour", candidate.FavColour, record.FavColour) * weighting["favColour"];
+                double nameSimilarityScore = GetSimilarityScore("name", candidate.Name, record.Name) * weighting["name"];
+                double ageSimilarityScore = GetSimilarityScore("age", candidate.Age, record.Age) * weighting["age"];
+                double addressSimilarityScore = GetSimilarityScore("address", candidate.Address, record.Address) * weighting["address"];
+                double emailPreSimilarityScore = GetSimilarityScore("emailPre", candidate.Email, record.Email) * weighting["emailPre"];
+                double birthdaySimilarityScore = GetSimilarityScore("birthday", candidate.Birthday, record.Birthday) * weighting["birthday"];
+                double favColourSimilarityScore = GetSimilarityScore("favColour", candidate.FavColour, record.FavColour) * weighting["favColour"];
 
-                confidenceScore = (nameScore + phoneScore + emailScore + addressScore) / 4; //TODO: Amend
+                double nameWeightedScore = nameSimilarityScore * weighting["name"];
+                double ageWeightedScore = ageSimilarityScore * weighting["age"];
+                double addressWeightedScore = addressSimilarityScore * weighting["address"];
+                double emailPreWeightedScore = emailPreSimilarityScore * weighting["emailPre"];
+                double birthdayWeightedScore = birthdaySimilarityScore * weighting["birthday"];
+                double favColourWeightedScore = favColourSimilarityScore * weighting["favColour"];
 
-               
+                double totalWeight = 0;
+
+                foreach (var pair in weighting)
+                {
+                    totalWeight += pair.Value;
+                }
+
+                confidenceScore = (nameWeightedScore + birthdayWeightedScore + emailPreWeightedScore + addressWeightedScore + favColourWeightedScore + ageWeightedScore) / totalWeight;
+                similarityScore = (nameSimilarityScore + ageSimilarityScore + addressSimilarityScore + emailPreSimilarityScore + birthdaySimilarityScore + favColourSimilarityScore) / 6.0;
+                //divided by 6 as that is the highest possible outcome when adding all 6 properties being considered.
+
+                results.Add(new MatchResult(record, $"Confidence score: {confidenceScore*100}%", $"Similarity score: {similarityScore*100}%")); // n*100 to turn decimal to %
             }
             return results;
         }
@@ -85,31 +106,32 @@ namespace PersonMatching
 
     class Program
     {
-         void Main(string[] args)
+         static void Main(string[] args)
         {
-            
-            //Person candidate = new Person
-            //("John A. Smith", 30, "300 Diff St, Chicago, USA", "john.q@example.com", "123-678-4567", "2024-08-26", "Red");
 
-            //// fake DB with sample records.
-            //List<Person> fakeDB = new List<Person> ()
-            //{
-            //    new Person("Ella M. Johnson", 29, "890 Cedar St, Cedarville, USA", "ella.johnson@example.com", "555-678-9012", "1995-06-12", "Blue"),
-            //    new Person("Emma A. Lee", 39, "789 Spruce St, Bigcity, USA", "emma.lee@example.com", "555-210-9876", "1985-11-05", "Green"),
-            //    new Person("Nathan R. Rodriguez", 32, "901 Elm St, Smalltown, USA", "nathan.rodriguez@example.com", "555-543-2109", "1992-09-30", "Red"),
-            //    new Person("Michael B. Smith", 30, "456 Maple St, Midtown, USA", "michael.smith@example.com", "555-321-6549", "1994-03-15", "Red")
-            //};
+            Person candidate = new Person
+            ("John A. Smith", "30", "300 Diff St, Chicago, USA", "john.q@example.com", "123-678-4567", "2024-08-26", "Red");
 
-            //List<MatchResult> results = new List<MatchResult>();
-
-            //foreach (var match in results)
-            //{
-            //    Console.WriteLine($"Matched Person: {match.MatchedPerson.Name}, Data Score: {match.DataScore}, Confidence: {match.ConfidenceScore}");
-            //}
-
-            //Console.WriteLine(DataScoreCalculator.GetSimilarityScore("123-456","456-123"));
+            // fake DB with sample records.
+            List<Person> fakeDB = new List<Person>()
+            {
+                new Person("Ella M. Johnson", "29", "890 Cedar St, Cedarville, USA", "ella.johnson@example.com", "555-678-9012", "1995-06-12", "Blue"),
+                new Person("Emma A. Lee", "39", "789 Spruce St, Bigcity, USA", "emma.lee@example.com", "555-210-9876", "1985-11-05", "Green"),
+                new Person("Nathan R. Rodriguez", "32", "901 Elm St, Smalltown, USA", "nathan.rodriguez@example.com", "555-543-2109", "1992-09-30", "Red"),
+                new Person("Michael B. Smith", "30", "456 Maple St, Midtown, USA", "michael.smith@example.com", "555-321-6549", "1994-03-15", "Red")
+            };
 
 
-    }
+
+            var answer = MatchingAlgorithm.CalculateMatch(candidate, fakeDB);
+
+            foreach (var field in answer)
+            {
+                Console.WriteLine(field.MatchedPerson.Name);
+                Console.WriteLine(field.ConfidenceScore);
+                Console.WriteLine(field.SimilarityScore);
+            }
+
+        }
 
     } }

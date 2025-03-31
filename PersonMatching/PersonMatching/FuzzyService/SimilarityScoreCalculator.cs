@@ -3,12 +3,12 @@ using System;
 
 namespace PersonMatching.FuzzyService
 {
-    public class DataScoreCalculator
+    public class SimilarityScoreCalculator
     {
         public static double GetSimilarityScore(string field, string candVal, string recVal)
         {
             if (string.IsNullOrWhiteSpace(candVal) || string.IsNullOrWhiteSpace(recVal))
-                return 0.0; // Return 0 if any value is missing
+                return 0.0;
 
             //handle emailPre also.
 
@@ -22,6 +22,9 @@ namespace PersonMatching.FuzzyService
 
                 case "email":
                     return GetEmailScore(candVal, recVal);
+
+                case "emailPrefix":
+                    return GetEmailPrefixScore(candVal, recVal);
 
                 case "favcolour":
                     return GetFavColourScore(candVal, recVal);
@@ -52,9 +55,13 @@ namespace PersonMatching.FuzzyService
 
         public static double GetEmailScore(string email1, string email2)
         {
+            return (email1 == email2) ? 1.0 : 0.0;
+        }
+        public static double GetEmailPrefixScore(string email1, string email2)
+        {
             return Fuzz.PartialRatio(email1.ToLower(), email2.ToLower()) / 100.0;
             //handles different email domains effectively to still return high similarity if email prefix
-            //has high similarity //TODO: EDIT??
+            //has high similarity
         }
 
         public static double GetFavColourScore(string colour1, string colour2)
