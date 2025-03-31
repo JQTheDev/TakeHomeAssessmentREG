@@ -121,16 +121,16 @@ namespace PersonMatching
                 new Person("Michael B. Smith", "30", "456 Maple St, Midtown, USA", "michael.smith@example.com", "555-321-6549", "1994-03-15", "Red")
             };
 
+            Console.WriteLine(SimilarityScoreCalculator.GetSimilarityScore("emailPrefix", "michael.smith", "nathan.rodriguez"));
 
+            //var answer = MatchingAlgorithm.CalculateMatch(candidate, fakeDB);
 
-            var answer = MatchingAlgorithm.CalculateMatch(candidate, fakeDB);
-
-            foreach (var field in answer)
-            {
-                Console.WriteLine(field.MatchedPerson.Name);
-                Console.WriteLine(field.ConfidenceScore);
-                Console.WriteLine(field.SimilarityScore);
-            }
+            //foreach (var field in answer)
+            //{
+            //    Console.WriteLine(field.MatchedPerson.Name);
+            //    Console.WriteLine(field.ConfidenceScore);
+            //    Console.WriteLine(field.SimilarityScore);
+            //}
 
         }
 

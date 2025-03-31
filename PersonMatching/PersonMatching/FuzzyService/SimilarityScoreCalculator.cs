@@ -10,7 +10,6 @@ namespace PersonMatching.FuzzyService
             if (string.IsNullOrWhiteSpace(candVal) || string.IsNullOrWhiteSpace(recVal))
                 return 0.0;
 
-            //handle emailPre also.
 
             switch (field.ToLower())
             {
@@ -23,7 +22,7 @@ namespace PersonMatching.FuzzyService
                 case "email":
                     return GetEmailScore(candVal, recVal);
 
-                case "emailPrefix":
+                case "emailprefix":
                     return GetEmailPrefixScore(candVal, recVal);
 
                 case "favcolour":
@@ -49,7 +48,7 @@ namespace PersonMatching.FuzzyService
         public static double GetAddressScore(string address1, string address2)
         {
             return Fuzz.TokenSortRatio(address1.ToLower(), address2.ToLower()) / 100.0;
-            //Similarity score barely affected by differences like street and st and order in which zipcode,
+            //Similarity score barely affected by differences like street and st and order in which door no.,
             // street name and etc appear in. e.g regtech Street 789  and 789 regtech St returns high similarity
         }
 
